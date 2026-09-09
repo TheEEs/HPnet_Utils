@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     array_include_methods (1.5.1)
-    async (2.45.0)
+    async (2.45.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.21)
@@ -36,7 +36,7 @@ GEM
       fiber-storage
     fiber-storage (1.0.1)
     fiddle (1.1.8)
-    glimmer (2.8.2)
+    glimmer (2.8.3)
       array_include_methods (>= 1.4.0, < 1.6.0)
       facets (= 3.1.0)
     glimmer-dsl-libui (0.13.1)
@@ -76,9 +76,19 @@ GEM
     multipart-post (2.4.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
+    nokogiri (1.19.4-aarch64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.19.4-aarch64-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.19.4-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.19.4-arm-linux-musl)
+      racc (~> 1.4)
     nokogiri (1.19.4-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-musl)
       racc (~> 1.4)
@@ -125,8 +135,13 @@ GEM
     zeitwerk (2.8.3)
 
 PLATFORMS
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux-gnu
+  arm-linux-musl
   arm64-darwin
   x86_64-darwin
+  x86_64-linux-gnu
   x86_64-linux-musl
 
 DEPENDENCIES
@@ -135,6 +150,7 @@ DEPENDENCIES
   fiddle (~> 1.1)
   glimmer-dsl-libui (~> 0.13.1)
   httparty (~> 0.24.2)
+  json (~> 2.6)
   libreconv (~> 0.9.5)
   minitest (~> 6.0)
   nokogiri (~> 1.19)

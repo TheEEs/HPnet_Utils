@@ -23,3 +23,5 @@ gem "nokogiri", "~> 1.19"
 gem "fiddle", "~> 1.1"
 
 gem "ruby_llm-schema", "~> 0.4.0"
+
+gem "json", "~> 2.6"

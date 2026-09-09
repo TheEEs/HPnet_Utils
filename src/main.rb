@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-require "bundler/setup"
-Bundler.require
+Bundler.require :default
 require 'glimmer-dsl-libui'
 Dotenv.load
 
