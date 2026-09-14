@@ -25,3 +25,5 @@ gem "fiddle", "~> 1.1"
 gem "ruby_llm-schema", "~> 0.4.0"
 
 gem "json", "~> 2.6"
+
+gem "os", "~> 1.1"
