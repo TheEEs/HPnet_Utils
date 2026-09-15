@@ -59,7 +59,9 @@ class ClientTest < Minitest::Test
     session = client_login_success
     assert_instance_of HPNET::Client::Session, session
 
-    tokens = client.validation_tokens
+    tokens = client.instance_eval do 
+      break validation_tokens
+    end
     assert_kind_of Hash, tokens
 
     refute_nil tokens["__VIEWSTATE"]
@@ -69,7 +71,7 @@ class ClientTest < Minitest::Test
 
   def test_validation_tokens_fail
     # When not logged in, should return nil
-    assert_nil client.validation_tokens
+    assert_nil client.instance_eval {validation_tokens}
   end
 
   def test_upload_success
@@ -109,8 +111,14 @@ class ClientTest < Minitest::Test
       assert_instance_of Hash, doc
     end
     doc = docs.first
-    workers = client.workers
-    
+    workers = client.workers(document_id: doc["VanbanDenId"])
+    refute_empty workers
+    workers.each do |worker|
+      assert_kind_of HPNET::Client::Worker, worker
+      refute_empty worker.name
+      refute_empty worker.id
+      refute_empty worker.key
+    end
   end
 
   private

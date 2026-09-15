@@ -1,44 +1,11 @@
+# frozen_string_literal: true
+
+require_relative "./helpers/client_helpers"
 module HPNET
   class Client
-    module Helpers
-      def login_url = ROOT_URL + "/style/qlvb2013/Login.aspx?ReturnURL=https%3a%2f%2fqlvb.hpnet.vn%2fdefault.aspx"
-      def upload_url = ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/DuthaoVanbandi.aspx"
-
-      def arrived_documents_url(doc_number: 5)
-        ROOT_URL + "/vpdt/xaphuong/VanbanDenTruongPhong.aspx?jtPageSize=#{doc_number}"
-      end
-
-      def assign_document_url(document_id: nil)
-        ROOT_URL + "/TruongPhongGiaoviecVBDen.aspx?VanbanDenId=#{document_id}"
-      end
-    end
-
-    LOGIN_SUCCESS_REGEX = /ASPXAUTH|ASPXFORMSAUTH/
-    EXPIRED_SESSION_REGEX = /đăng nhập lại/i
-
-    Session = Struct.new :cookie, :display_name
-
-    attr_accessor :current_session
-
     include Helpers
 
-    ROOT_URL = "https://qlvb.hpnet.vn"
-
-    COMMON_HEADERS = {
-      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Origin': 'https://qlvb.hpnet.vn',
-      'Referer': 'https://qlvb.hpnet.vn/style/qlvb2013/Login.aspx?ReturnURL=https://qlvb.hpnet.vn/default.aspx'
-    }
-
-    LOGIN_BODY = {
-      '__EVENTTARGET' => '',
-      '__EVENTARGUMENT' => '',
-      '__VIEWSTATE' => 'OzB0Tiqetl10GgwLFoAU8Lziur1tnI5gqVDCoVDAHdUt5Ayp23byZEPAXVXfIpor6DZGQSVKaWy3VwiSO7tmi4ngMhaG7u64sGuHleqVcnVwh2qeqygOcoBtd38A6ks38C5/Y+Pe/vWoa0bI9B9+zOSwpiy92l5KQkLsrVKzVkd9Mou2TQ7kUnXwuDXjbJFG8qjUeRlRYUwUj9NuzbCj6FZoHLCUD2MEJD4bHkbqMd9BD61po3mCCdIkvBgj3n7pbGYUpRpqBEYP6qEeyQ5mXgNmdG0=',
-      '__VIEWSTATEGENERATOR' => '9EC021CD',
-      '__EVENTVALIDATION' => 'Ot1MAI5VgTW/YpxgZFXFS8y1ZTT4vEYTVCCdOWUWq9A1GQ5XBjbeBOWDXgtsRqpogDMolx8sk2Ynwg/kLo75+B7wdeidbx4bzzFU+C8xbsKAf8K0SGCnOkpP+2NaBvfrYhcLqzKy7dgDSwduFjoZbd+IyKM5+pTiGgPIETFeFfe27P4UaaOB5M0XGd197oJEJHYFsA==',
-      'Login1$Login' => 'Đăng nhập'
-    }
+    attr_accessor :current_session
 
     def login(username: '', password: '')
       body = LOGIN_BODY.merge('Login1$UserName' => username,
@@ -73,33 +40,6 @@ module HPNET
 
     alias upload_page leaders
 
-    def validation_tokens(force_update: false)
-      if force_update or !@validation_tokens
-        @validation_tokens = upload_page do |html_doc|
-          break {
-            "__VIEWSTATE" => html_doc.css("input#__VIEWSTATE")&.attr('value')&.value,
-            "__VIEWSTATEGENERATOR" => html_doc.css('input#__VIEWSTATEGENERATOR')&.attr('value')&.value,
-            "__EVENTVALIDATION" => html_doc.css('input#__EVENTVALIDATION')&.attr('value')&.value
-          }
-        end
-      end
-      @validation_tokens
-    end
-
-    UPLOAD_BODY = {
-      "__VIEWSTATE" => '',
-      "__VIEWSTATEGENERATOR" => '',
-      "__EVENTVALIDATION" => '',
-      'drpDokhan' => '09b49493-9cba-4ead-bb04-9080aac6b8af',
-      'txtTrichYeu' => '',
-      'drpLanhDao' => '',
-      'txtVanbanDen' => '',
-      'txtYkien' => '',
-      'txtFilePhieutrinh' => '',
-      'txtFileTrinh' => nil,
-      'txtFilePhieutrinhConverted' => '',
-      'btnUpdate' => "Cập nhật"
-    }
     def upload(file_path, to: nil, title: nil)
       return unless self.current_session && File.file?(file_path)
 
@@ -118,32 +58,51 @@ module HPNET
       end
     end
 
-    GET_ARRIVED_DOCUMENTS_REQUEST_BODY = {
-      'all' => 'false',
-      'key' => '',
-      'status' => '18',
-      'sokyhieu' => '',
-      'trichyeu' => '',
-      'coquan' => ''
-    }
-    def get_arrived_documents
+    def get_arrived_documents(doc_number: 500)
       return unless self.current_session
 
       headers = COMMON_HEADERS.merge(
         "Cookie" => self.current_session.cookie
       )
-      res = JSON.parse(HTTParty.post(arrived_documents_url(doc_number: 500), headers:,
-                                                                             body: GET_ARRIVED_DOCUMENTS_REQUEST_BODY).body)
+      res = HTTParty.post(arrived_documents_url(doc_number:), headers:, body: GET_ARRIVED_DOCUMENTS_REQUEST_BODY)
+      res = JSON.parse(res.body)
       fetched_documents = res["Records"].flatten
     end
 
     def workers(document_id: nil)
-      return unless document_id
-      
+      return unless self.current_session
+
+      @workers ||= begin
+        headers = COMMON_HEADERS.merge(
+          "Cookie" => self.current_session.cookie
+        )
+        res = HTTParty.get(assign_document_url(document_id:), headers:)
+        html_doc = Nokogiri::HTML5(res.body)
+        user_id_elements = html_doc.css('td:has(> input[type="hidden"][name^="repChuyenVien"][name$="userId"])')
+        user_id_elements.map do |e|
+          Worker.new(name: e.text.strip, key: e.children[1].attr("name"),
+                     id: e.children[1].attr("value"))
+        end
+      end
     end
 
     def fetch_document_pdf_file(document_id: nil)
       return if document_id&.to_s&.empty?
+    end
+
+
+    private
+    def validation_tokens(force_update: false)
+      if force_update or !@validation_tokens
+        @validation_tokens = upload_page do |html_doc|
+          break {
+            "__VIEWSTATE" => html_doc.css("input#__VIEWSTATE")&.attr('value')&.value,
+            "__VIEWSTATEGENERATOR" => html_doc.css('input#__VIEWSTATEGENERATOR')&.attr('value')&.value,
+            "__EVENTVALIDATION" => html_doc.css('input#__EVENTVALIDATION')&.attr('value')&.value
+          }
+        end
+      end
+      @validation_tokens
     end
   end
 end
