@@ -1,4 +1,4 @@
 .env
 .env.test
 .cookie
-./spec/sample_files/*.pdf
+spec/sample_files/*.pdf

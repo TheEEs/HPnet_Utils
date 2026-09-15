@@ -3,6 +3,14 @@ module HPNET
     module Helpers
       def login_url = ROOT_URL + "/style/qlvb2013/Login.aspx?ReturnURL=https%3a%2f%2fqlvb.hpnet.vn%2fdefault.aspx"
       def upload_url = ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/DuthaoVanbandi.aspx"
+
+      def arrived_documents_url(doc_number: 5)
+        ROOT_URL + "/vpdt/xaphuong/VanbanDenTruongPhong.aspx?jtPageSize=#{doc_number}"
+      end
+
+      def assign_document_url(document_id: nil)
+        ROOT_URL + "/TruongPhongGiaoviecVBDen.aspx?VanbanDenId=#{document_id}"
+      end
     end
 
     LOGIN_SUCCESS_REGEX = /ASPXAUTH|ASPXFORMSAUTH/
@@ -42,6 +50,7 @@ module HPNET
         self.current_session = Session.new(cookie: res.request.options[:headers]["Cookie"], display_name:)
         return self.current_session
       end
+      self.current_session = nil
       return nil
     end
 
@@ -107,6 +116,34 @@ module HPNET
         res = HTTParty.post(upload_url, headers:, body:)
         res.success?
       end
+    end
+
+    GET_ARRIVED_DOCUMENTS_REQUEST_BODY = {
+      'all' => 'false',
+      'key' => '',
+      'status' => '18',
+      'sokyhieu' => '',
+      'trichyeu' => '',
+      'coquan' => ''
+    }
+    def get_arrived_documents
+      return unless self.current_session
+
+      headers = COMMON_HEADERS.merge(
+        "Cookie" => self.current_session.cookie
+      )
+      res = JSON.parse(HTTParty.post(arrived_documents_url(doc_number: 500), headers:,
+                                                                             body: GET_ARRIVED_DOCUMENTS_REQUEST_BODY).body)
+      fetched_documents = res["Records"].flatten
+    end
+
+    def workers(document_id: nil)
+      return unless document_id
+      
+    end
+
+    def fetch_document_pdf_file(document_id: nil)
+      return if document_id&.to_s&.empty?
     end
   end
 end
