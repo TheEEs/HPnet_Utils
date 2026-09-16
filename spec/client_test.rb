@@ -59,7 +59,7 @@ class ClientTest < Minitest::Test
     session = client_login_success
     assert_instance_of HPNET::Client::Session, session
 
-    tokens = client.instance_eval do 
+    tokens = client.instance_eval do
       break validation_tokens
     end
     assert_kind_of Hash, tokens
@@ -71,7 +71,7 @@ class ClientTest < Minitest::Test
 
   def test_validation_tokens_fail
     # When not logged in, should return nil
-    assert_nil client.instance_eval {validation_tokens}
+    assert_nil client.instance_eval { validation_tokens }
   end
 
   def test_upload_success
@@ -118,6 +118,23 @@ class ClientTest < Minitest::Test
       refute_empty worker.name
       refute_empty worker.id
       refute_empty worker.key
+    end
+
+    main_worker = workers.delete workers.sample
+    notify_workers = workers.sample(rand(1..workers.size))
+    cooperative_workers = workers.sample(rand(1..workers.size))
+
+    final_assign_form = client.build_assign_workers_form_params(main_worker:, cooperative_workers:, notify_workers:)
+    assert final_assign_form >= main_worker.main_worker
+    assert final_assign_form >= begin
+      notify_workers.map do |w|
+        w.notify_on
+      end.reduce({}, :merge)
+    end
+    assert final_assign_form >= begin
+      cooperative_workers.map do |w|
+        w.cooperative_on
+      end.reduce({}, :merge)
     end
   end
 

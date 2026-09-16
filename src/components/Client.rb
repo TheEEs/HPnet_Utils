@@ -86,12 +86,22 @@ module HPNET
       end
     end
 
-    def fetch_document_pdf_file(document_id: nil)
-      return if document_id&.to_s&.empty?
+    def build_assign_workers_form_params(main_worker: nil, cooperative_workers: nil, notify_workers: nil)
+      result = {}
+      if main_worker.is_a? Worker
+        result.merge! main_worker.main_worker
+      end
+      if cooperative_workers.is_a?(Array) and cooperative_workers.all?(Worker)
+        result.merge! cooperative_workers.reduce({}) { |r, v| r.merge!(v.cooperative_on) }
+      end
+      if notify_workers.is_a?(Array) and notify_workers.all?(Worker)
+        result.merge! notify_workers.reduce({}) { |r, v| r.merge!(v.notify_on) }
+      end
+      result
     end
 
-
     private
+
     def validation_tokens(force_update: false)
       if force_update or !@validation_tokens
         @validation_tokens = upload_page do |html_doc|

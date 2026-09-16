@@ -117,6 +117,8 @@ GEM
       ruby_llm-schema (~> 0)
       zeitwerk (~> 2)
     ruby_llm-schema (0.4.0)
+    ruby_llm-skills (0.3.0)
+      ruby_llm (~> 1.12)
     super_module (1.4.2)
       method_source (>= 0.8.2, < 2.0.0)
     text-table (1.2.4)
@@ -157,6 +159,7 @@ DEPENDENCIES
   os (~> 1.1)
   ruby_llm (~> 1.16)
   ruby_llm-schema (~> 0.4.0)
+  ruby_llm-skills (~> 0.3.0)
 
 BUNDLED WITH
    2.6.9
