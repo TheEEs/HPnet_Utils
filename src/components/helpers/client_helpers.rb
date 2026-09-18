@@ -19,7 +19,6 @@ module HPNET
         'txtFilePhieutrinhConverted' => '',
         'btnUpdate' => "Cập nhật"
       }
-      Session = Struct.new :cookie, :display_name
 
       ROOT_URL = "https://qlvb.hpnet.vn"
 
@@ -48,18 +47,6 @@ module HPNET
         'coquan' => ''
       }
 
-      def login_url = ROOT_URL + "/style/qlvb2013/Login.aspx?ReturnURL=https%3a%2f%2fqlvb.hpnet.vn%2fdefault.aspx"
-
-      def upload_url = ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/DuthaoVanbandi.aspx"
-
-      def arrived_documents_url(doc_number: 5)
-        ROOT_URL + "/vpdt/xaphuong/VanbanDenTruongPhong.aspx?jtPageSize=#{doc_number}"
-      end
-
-      def assign_document_url(document_id: nil)
-        ROOT_URL + "/vpdt/xaphuong/TruongPhongGiaoviecVBDen.aspx?VanbanDenId=#{document_id}"
-      end
-
       WORKER_KEY_REGEX = /userId$/
       Worker = Struct.new :name, :key, :id
       Worker.class_eval do
@@ -74,6 +61,20 @@ module HPNET
         def main_worker
           { 'radChuyenVien' => self.id }
         end
+      end
+
+      Session = Struct.new :cookie, :display_name
+
+      def login_url = ROOT_URL + "/style/qlvb2013/Login.aspx?ReturnURL=https%3a%2f%2fqlvb.hpnet.vn%2fdefault.aspx"
+
+      def upload_url = ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/DuthaoVanbandi.aspx"
+
+      def arrived_documents_url(doc_number: 5)
+        ROOT_URL + "/vpdt/xaphuong/VanbanDenTruongPhong.aspx?jtPageSize=#{doc_number}"
+      end
+
+      def assign_document_url(document_id: nil)
+        ROOT_URL + "/vpdt/xaphuong/TruongPhongGiaoviecVBDen.aspx?VanbanDenId=#{document_id}"
       end
     end
   end

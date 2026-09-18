@@ -105,13 +105,14 @@ class ClientTest < Minitest::Test
 
   def test_get_docs_list_and_extract_worker_success
     client_login_success
+    docs = client.get_arrived_documents(doc_number: 1)
+    assert_equal 1, docs.size
     docs = client.get_arrived_documents
     assert_instance_of Array, docs
     docs.each do |doc|
       assert_instance_of Hash, doc
     end
-    doc = docs.first
-    workers = client.workers(document_id: doc["VanbanDenId"])
+    workers = client.workers
     refute_empty workers
     workers.each do |worker|
       assert_kind_of HPNET::Client::Worker, worker

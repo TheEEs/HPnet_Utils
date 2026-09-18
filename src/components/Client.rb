@@ -21,6 +21,8 @@ module HPNET
       return nil
     end
 
+    def logged_in? = not (self.current_session.cookie.to_s.empty? rescue true)
+
     def leaders
       return unless self.current_session
 
@@ -69,14 +71,15 @@ module HPNET
       fetched_documents = res["Records"].flatten
     end
 
-    def workers(document_id: nil)
+    def workers
       return unless self.current_session
 
       @workers ||= begin
         headers = COMMON_HEADERS.merge(
           "Cookie" => self.current_session.cookie
         )
-        res = HTTParty.get(assign_document_url(document_id:), headers:)
+        docs = self.get_arrived_documents(doc_number: 1)
+        res = HTTParty.get(assign_document_url(document_id: docs.first["VanbanDenId"]), headers:)
         html_doc = Nokogiri::HTML5(res.body)
         user_id_elements = html_doc.css('td:has(> input[type="hidden"][name^="repChuyenVien"][name$="userId"])')
         user_id_elements.map do |e|
