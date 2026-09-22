@@ -1,7 +1,16 @@
 {
-    "spec/sample_files/5729_389.signed.pdf": "Hoàng Thu Thảo",
-    "spec/sample_files/5722_382.signed.pdf": "Hoàng Thu Thảo",
-    "spec/sample_files/5685_345.signed.pdf": "Hoàng Thu Thảo",
-    "spec/sample_files/5717_377.signed.pdf": "Hoàng Thu Thảo",
-    "spec/sample_files/5726_386.signed.pdf": "Hoàng Thu Thảo"
+    "spec/sample_files/HTT1.pdf": "Hoàng Thu Thảo",
+    "spec/sample_files/HTT2.pdf": "Hoàng Thu Thảo",
+    "spec/sample_files/HTT3.pdf": "Hoàng Thu Thảo",
+    "spec/sample_files/PVM1.pdf": "Phạm Văn Mạnh",
+    "spec/sample_files/PVM2.pdf": "Phạm Văn Mạnh",
+    "spec/sample_files/PVM3.pdf": "Phạm Văn Mạnh",
+    "spec/sample_files/LTM1.pdf": "Lại Thế Mạnh",
+    "spec/sample_files/LTM2.pdf": "Lại Thế Mạnh",
+    "spec/sample_files/LTM3.pdf": "Lại Thế Mạnh",
+    "spec/sample_files/VHP1.pdf": "Vũ Hào Phú",
+    "spec/sample_files/VHP2.pdf": "Vũ Hào Phú",
+    "spec/sample_files/VHP3.pdf": "Vũ Hào Phú",
+    "spec/sample_files/cks.pdf": "",
+    "spec/sample_files/qduq.pdf": ""
 }
