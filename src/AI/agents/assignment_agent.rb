@@ -26,8 +26,6 @@ class AssignmentAgent < RubyLLM::Agent
     end
 
     def execute(main_worker:, cooperative_workers:, notify_workers:)
-      #return unless client.logged_in?
-      #return unless client.workers.any?(main_worker)
       puts r = {
         main_worker:,
         cooperative_workers:,
