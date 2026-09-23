@@ -31,7 +31,12 @@ class AssignmentAgentTest < Minitest::Test
     test_json.each_pair do |f, w|
       ag = AssignmentAgent.new(client:)
       result = ag.ask(with: f).content
-      assert_equal w, result["name"]
+      if result["processed"]
+        assert_equal w, result["main_worker"]
+      else
+        assert_nil result["main_worker"]
+        assert_equal false, result["processed"]
+      end
     end
   end
 

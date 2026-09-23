@@ -10,7 +10,7 @@ gem "libreconv", "~> 0.9.5"
 
 gem "async", "~> 2.45"
 
-gem "ruby_llm", "~> 1.16"
+gem "ruby_llm", "~> 2.0.0"
 
 gem "minitest", "~> 6.0", group: :test
 
@@ -27,5 +27,3 @@ gem "ruby_llm-schema", "~> 0.4.0"
 gem "json", "~> 2.6"
 
 gem "os", "~> 1.1"
-
-gem "ruby_llm-skills", "~> 0.3.0"
