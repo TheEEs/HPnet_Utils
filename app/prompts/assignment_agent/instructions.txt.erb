@@ -23,12 +23,10 @@ Khi bạn nhận được một văn bản, hãy thực hiện các trình tự 
             <%= ["TDP Phả Lễ 1", "TDP Phả Lễ 2", "TDP Phả Lễ 3", "TDP Phả Lễ 4", "TDP Phả Lễ 5", "TDP Phả Lễ 6"].join(", ") %>
         <% elsif w.name == "Vũ Hào Phú" %>
             <%= ["TDP Láng Cáp", "TDP Đầu Cầu", "TDP Đường Trưỡng", "TDP Đồng Mới", "TDP Tân Lập", "TDP Bảo Kiếm", "TDP Lạch Sẽ", "TDP Đường Hương"].join(", ") %>
-        <% else %>
-            Không có tổ dân phố nào được giao
         <% end %>
     </td>
 </tr>
 <% end %>
 </table>
-
+LƯU Ý QUAN TRỌNG: Vị trí thửa đất thể hiện trong văn bản phải xuất hiện trong cột "Tổ dân phố được giao", nêu vị trí của thửa đất không nằm trong danh sách trên thì không cần phải xử lý tiếp.
 3. Sau khi lựa chọn được ID tương ứng, hãy gọi tool AssignTool với tham số main_worker là ID của chuyên viên được giao phụ trách chính, cooperative_workers là một mảng các ID của các chuyên viên phối hợp với main_worker để thực hiện công việc.
