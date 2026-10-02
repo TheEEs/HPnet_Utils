@@ -103,11 +103,44 @@ module HPNET
       result
     end
 
+    def get_uploaded_documents
+      return unless self.logged_in?
+
+      headers = COMMON_HEADERS.merge(
+        "Cookie" => self.current_session.cookie
+      )
+      res = HTTParty.post(uploaded_documents_url(doc_number: 500), headers:, body: GET_UPLOADED_DOCUMENTS_REQUEST_BODY)
+      res = JSON.parse(res.body)
+      fetched_documents = res["Records"].flatten
+    end
+
+    def approve_document(document_id: nil, lanhdao_id: nil)
+      return unless self.logged_in? and document_id and lanhdao_id
+
+      @vanthu_id ||= begin
+        self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
+      end
+      headers = COMMON_HEADERS.merge(
+        "Cookie" => self.current_session.cookie
+      )
+      body = APPROVE_DOCUMENT_REQUEST_BODY.merge(
+        **self.approve_validation_tokens,
+        "dataLanhdaoId" => lanhdao_id,
+        "drpVanthuId" => @vanthu_id
+      )
+      res = HTTParty.post(approve_document_url(document_id:), headers:, body: body, multipart: true)
+      if res.success?
+        return true
+      end
+
+      false
+    end
+
     private
 
-    def validation_tokens(force_update: false)
-      if force_update or !@validation_tokens
-        @validation_tokens = upload_page do |html_doc|
+    def upload_validation_tokens(force_update: false)
+      if force_update or !@upload_validation_tokens
+        @upload_validation_tokens = upload_page do |html_doc|
           break {
             "__VIEWSTATE" => html_doc.css("input#__VIEWSTATE")&.attr('value')&.value,
             "__VIEWSTATEGENERATOR" => html_doc.css('input#__VIEWSTATEGENERATOR')&.attr('value')&.value,
@@ -115,7 +148,33 @@ module HPNET
           }
         end
       end
-      @validation_tokens
+      @upload_validation_tokens
+    end
+
+    def approve_validation_tokens(force_update: false)
+      if force_update or !@approve_validation_tokens
+        @approve_validation_tokens = approve_page do |html_doc|
+          break {
+            "__VIEWSTATE" => html_doc.css("input#__VIEWSTATE")&.attr('value')&.value,
+            "__VIEWSTATEGENERATOR" => html_doc.css('input#__VIEWSTATEGENERATOR')&.attr('value')&.value,
+            "__EVENTVALIDATION" => html_doc.css('input#__EVENTVALIDATION')&.attr('value')&.value
+          }
+        end
+      end
+      @approve_validation_tokens
+    end
+
+    def approve_page
+      return unless self.logged_in?
+
+      headers = COMMON_HEADERS.merge("Cookie" => self.current_session.cookie)
+      docs = self.get_uploaded_documents
+      doc = docs.sample
+      res = HTTParty.get approve_page_url(document_id: doc["VanbanDiId"]), headers: headers
+      return if res.body.match? EXPIRED_SESSION_REGEX
+
+      html_doc = Nokogiri.HTML5(res.body)
+      yield html_doc if block_given?
     end
   end
 end

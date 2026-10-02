@@ -13,6 +13,12 @@ class ClientTest < Minitest::Test
 
       true
     end
+
+    def approve_document(document_id: nil, lanhdao_id: nil)
+      return unless self.logged_in? and document_id and lanhdao_id
+
+      true
+    end
   end
 
   def setup
@@ -55,13 +61,23 @@ class ClientTest < Minitest::Test
     assert_nil leaders
   end
 
-  def test_validation_tokens_success
+  def test_upload_and_approve_validation_tokens_success
     session = client_login_success
     assert_instance_of HPNET::Client::Session, session
 
     tokens = client.instance_eval do
-      break validation_tokens
+      break upload_validation_tokens
     end
+    assert_kind_of Hash, tokens
+
+    refute_nil tokens["__VIEWSTATE"]
+    refute_nil tokens["__VIEWSTATEGENERATOR"]
+    refute_nil tokens["__EVENTVALIDATION"]
+
+    tokens = client.instance_eval do
+      break approve_validation_tokens
+    end
+
     assert_kind_of Hash, tokens
 
     refute_nil tokens["__VIEWSTATE"]
@@ -69,9 +85,10 @@ class ClientTest < Minitest::Test
     refute_nil tokens["__EVENTVALIDATION"]
   end
 
-  def test_validation_tokens_fail
+  def test_upload_and_approve_validation_tokens_fail
     # When not logged in, should return nil
-    assert_nil client.instance_eval { validation_tokens }
+    assert_nil client.instance_eval { upload_validation_tokens }
+    assert_nil client.instance_eval { approve_validation_tokens }
   end
 
   def test_upload_success
@@ -137,6 +154,19 @@ class ClientTest < Minitest::Test
         w.cooperative_on
       end.reduce({}, :merge)
     end
+  end
+
+  def test_client_approve_success
+    client_login_success
+    docs = client.get_uploaded_documents
+    assert_instance_of Array, docs
+    refute_empty docs
+    doc = docs.first
+    lanhdao_id = client.leaders.find { |l| l[:name].include?("PCVP") }[:value]
+    assert_instance_of String, lanhdao_id
+    refute_empty lanhdao_id
+    success = client.approve_document(document_id: doc["VanbanDiId"], lanhdao_id: lanhdao_id)
+    assert success
   end
 
   private

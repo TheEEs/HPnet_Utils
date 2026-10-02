@@ -7,7 +7,7 @@ module HPNET
       c.gemini_api_key = GEMINI_API_KEY
     end
 
-    class SummarySchema < RubyLLM::Schema
+    class SummarySchema < Schematist::Schema
       string :type, description: "Loại văn bản (ví dụ: Thông báo, Tờ trình, Báo cáo, ...)"
       string :title, description: "Mô tả ngắn gọn về nội dung văn bản"
       string :name, description: "Đối tượng chịu ảnh hưởng của văn bản"

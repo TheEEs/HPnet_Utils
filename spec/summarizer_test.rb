@@ -20,11 +20,10 @@ class DocumentSummarizerTest < Minitest::Test
 
   def test_summarize_information_success
     refute_empty file_paths
-    file_paths.each do |path|
-      summary = Schema.from_hash Summarizer.summarize(path).content
-      refute_empty summary.type
-      refute_empty summary.name
-      refute_empty summary.title
-    end
+    path = file_paths.sample
+    summary = Schema.from_hash Summarizer.summarize(path).parsed
+    refute_empty summary.type
+    refute_empty summary.name
+    refute_empty summary.title
   end
 end

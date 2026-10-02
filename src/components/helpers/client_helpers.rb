@@ -47,6 +47,28 @@ module HPNET
         'coquan' => ''
       }
 
+      GET_UPLOADED_DOCUMENTS_REQUEST_BODY = {
+        'key' => '',
+        'all' => 'false',
+        'status' => '1'
+      }
+
+      VANTHU_REGEX = /văn thư/i
+
+      APPROVE_DOCUMENT_REQUEST_BODY = {
+        "__VIEWSTATE" => "",
+        "__VIEWSTATEGENERATOR" => "",
+        "__EVENTVALIDATION" => "",
+        "txtYkienDuthao" => "",
+        "txtFileDuthao" => nil,
+        "dataLanhdaoId" => "",
+        "drpNguoikyId" => "",
+        "drpVanthuId" => "",
+        "txtFileConverted" => nil,
+        "txtFilePhieutrinhConverted" => nil,
+        "btnDuyenTrinh" => "Duyệt trình"
+      }
+
       WORKER_KEY_REGEX = /userId$/
       Worker = Struct.new :name, :key, :id
       Worker.class_eval do
@@ -76,6 +98,16 @@ module HPNET
       def assign_document_url(document_id: nil)
         ROOT_URL + "/vpdt/xaphuong/TruongPhongGiaoviecVBDen.aspx?VanbanDenId=#{document_id}"
       end
+
+      def uploaded_documents_url(doc_number: 5)
+        ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/VanbanDiListDuthao.aspx?jtStartIndex=0&jtPageSize=#{doc_number}"
+      end
+
+      def approve_document_url(document_id: nil)
+        ROOT_URL + "/vpdt/dungchung/DuthaoVanbanQuanhuyenV2/VanbanDuthaoView.aspx?VanbanDiId=#{document_id}"
+      end
+
+      alias approve_page_url approve_document_url
     end
   end
 end
