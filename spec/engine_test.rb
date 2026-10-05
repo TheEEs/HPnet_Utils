@@ -2,7 +2,7 @@
 
 require "test_helper"
 require "minitest/autorun"
-require_relative "../src/components/engine"
+require_relative "../src/components/Engine"
 
 class EngineTest < Minitest::Test
 
