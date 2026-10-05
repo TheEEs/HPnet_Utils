@@ -3,6 +3,9 @@
 module HPNET
   class Client
     module Helpers
+      class UnauthorizedException < Exception
+      end
+
       LOGIN_SUCCESS_REGEX = /ASPXAUTH|ASPXFORMSAUTH/
       EXPIRED_SESSION_REGEX = /đăng nhập lại/i
       UPLOAD_BODY = {

@@ -23,6 +23,8 @@ module HPNET
 
     def logged_in? = not (self.current_session.cookie.to_s.empty? rescue true)
 
+    def display_name = self.current_session&.display_name
+
     def leaders
       return unless self.current_session
 
