@@ -1,4 +1,3 @@
-require_relative "../windows/main"
 module HPNET
     class Engine
         

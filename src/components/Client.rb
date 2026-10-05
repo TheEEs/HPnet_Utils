@@ -103,13 +103,16 @@ module HPNET
       result
     end
 
-    def get_uploaded_documents
+    def get_uploaded_documents(query: nil)
       return unless self.logged_in?
 
       headers = COMMON_HEADERS.merge(
         "Cookie" => self.current_session.cookie
       )
-      res = HTTParty.post(uploaded_documents_url(doc_number: 500), headers:, body: GET_UPLOADED_DOCUMENTS_REQUEST_BODY)
+      body = GET_UPLOADED_DOCUMENTS_REQUEST_BODY.merge(
+        key: query
+      )
+      res = HTTParty.post(uploaded_documents_url(doc_number: 500), headers:, body:)
       res = JSON.parse(res.body)
       fetched_documents = res["Records"].flatten
     end
