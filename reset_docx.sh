@@ -1,1 +1,0 @@
-find spec/samples_word_file/*.unused | xargs basename -s .unused | xargs -I {} mv spec/samples_word_file/{}.unused spec/samples_word_file/{}
