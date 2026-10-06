@@ -1,4 +1,6 @@
 require_relative "./Client"
+require "async/semaphore"
+
 module HPNET
   class Engine
     attr_reader :client
@@ -16,8 +18,9 @@ module HPNET
         docs.each do |doc|
           semaphore.async do
             doc_id = doc["VanbanDiId"]
+            puts "Processing: #{doc_id}"
             res = client.approve_document(document_id: doc_id, lanhdao_id: lanhdao_id)
-            yield res if block_given?
+            yield res, doc, docs if block_given?
           end
         end
       end

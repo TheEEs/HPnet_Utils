@@ -27,3 +27,7 @@ gem "ruby_llm-schema", "~> 0.4.0"
 gem "json", "~> 2.6"
 
 gem "os", "~> 1.1"
+
+gem "pry", "~> 0.16.0", group: :test
+
+gem "pry-byebug", "~> 3.12", group: :test

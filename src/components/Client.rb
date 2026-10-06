@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "uri"
 require_relative "./helpers/client_helpers"
 module HPNET
   class Client
@@ -73,7 +74,7 @@ module HPNET
     end
 
     def workers
-      return unless self.current_session
+      return unless self.logged_in?
 
       @workers ||= begin
         headers = COMMON_HEADERS.merge(
@@ -104,23 +105,25 @@ module HPNET
       result
     end
 
-    def get_uploaded_documents(query: nil)
+    def get_uploaded_documents(filter: nil)
       return unless self.logged_in?
 
       headers = COMMON_HEADERS.merge(
         "Cookie" => self.current_session.cookie
       )
       body = GET_UPLOADED_DOCUMENTS_REQUEST_BODY.merge(
-        key: query
+        "key" => filter
       )
+      body = URI.encode_www_form(body).gsub('+', '%20')
       res = HTTParty.post(uploaded_documents_url(doc_number: 500), headers:, body:)
       res = JSON.parse(res.body)
-      fetched_documents = res["Records"].flatten
+      res["Records"].flatten
     end
-
+    
     def approve_document(document_id: nil, lanhdao_id: nil)
       return unless self.logged_in? and document_id and lanhdao_id
 
+      binding.pry
       @vanthu_id ||= begin
         self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
       end

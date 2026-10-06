@@ -17,6 +17,9 @@ class ClientTest < Minitest::Test
     def approve_document(document_id: nil, lanhdao_id: nil)
       return unless self.logged_in? and document_id and lanhdao_id
 
+      @vanthu_id ||= begin
+        self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
+      end
       true
     end
   end

@@ -5,7 +5,7 @@ module HPNET
       include Glimmer::LibUI::CustomWindow
 
       body {
-        @window = window() {
+        window() {
           margined true
           resizable false
           vertical_box {
@@ -24,8 +24,9 @@ module HPNET
         }
       }
       def approve(...)
-        approve_window = HPNET::Windows::Approve.new(engine:, parent: @window) do |w|
+        approve_window = HPNET::Windows::Approve.new(engine:, parent: self) do |w|
           w.title = "Chuyển duyệt văn bản hàng loạt - #{engine.client.display_name}"
+          self.disable
         end
         approve_window.show
       end

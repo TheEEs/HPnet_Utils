@@ -28,6 +28,7 @@ module HPNET
       COMMON_HEADERS = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0',
         'Content-Type': 'application/x-www-form-urlencoded',
+        # charset=UTF-8
         'Origin': 'https://qlvb.hpnet.vn',
         'Referer': 'https://qlvb.hpnet.vn/style/qlvb2013/Login.aspx?ReturnURL=https://qlvb.hpnet.vn/default.aspx'
       }
