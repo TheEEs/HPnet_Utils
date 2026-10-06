@@ -6,6 +6,9 @@ module HPNET
       class UnauthorizedException < Exception
       end
 
+      class ClericalAssistantNotFound < Exception 
+      end
+
       LOGIN_SUCCESS_REGEX = /ASPXAUTH|ASPXFORMSAUTH/
       EXPIRED_SESSION_REGEX = /đăng nhập lại/i
       UPLOAD_BODY = {

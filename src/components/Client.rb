@@ -126,6 +126,11 @@ module HPNET
       @vanthu_id ||= begin
         self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
       end
+
+      unless @vanthu_id 
+        raise ClericalAssistantNotFound.new
+      end
+
       headers = COMMON_HEADERS.merge(
         "Cookie" => self.current_session.cookie
       )
