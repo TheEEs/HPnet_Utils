@@ -4,6 +4,7 @@ module HPNET
       include Glimmer::LibUI::CustomWindow
 
       attr_accessor :filter_text
+      attr_reader :leaders
 
       body {
         @window = window("Chuyển duyệt văn bản hàng loạt") {
@@ -19,7 +20,7 @@ module HPNET
             progress_bar {
               stretchy false
             }
-            label("Tiến trình thực hiện:"){
+            label("Tiến trình thực hiện:") {
               stretchy false
             }
             button("Chuyển duyệt") {
@@ -31,6 +32,10 @@ module HPNET
       }
 
       def approve(...)
+      end
+
+      def initialize(...)
+        super
       end
     end
   end

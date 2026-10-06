@@ -25,24 +25,23 @@ module HPNET
 
     def display_name = self.current_session&.display_name
 
-    def leaders
-      return unless self.current_session
+    def leaders(force_update: false)
+      return unless self.logged_in?
 
-      headers = COMMON_HEADERS.merge("Cookie" => self.current_session.cookie)
-      res = HTTParty.get upload_url, headers: headers
-      return if res.body.match? EXPIRED_SESSION_REGEX
+      @leaders ||= begin
+        headers = COMMON_HEADERS.merge("Cookie" => self.current_session.cookie)
+        res = HTTParty.get upload_url, headers: headers
+        return if res.body.match? EXPIRED_SESSION_REGEX
 
-      html_doc = Nokogiri.HTML5(res.body)
-      yield html_doc if block_given?
-      html_doc.css("select#drpLanhDao option").to_a.map! do |a|
-        {
-          name: a.text.strip,
-          value: a.values.join("")
-        }
-      end.select! { |a| !a[:value].empty? }
+        html_doc = Nokogiri.HTML5(res.body)
+        html_doc.css("select#drpLanhDao option").to_a.map! do |a|
+          {
+            name: a.text.strip,
+            value: a.values.join("")
+          }
+        end.select! { |a| !a[:value].empty? }
+      end
     end
-
-    alias upload_page leaders
 
     def upload(file_path, to: nil, title: nil)
       return unless self.current_session && File.file?(file_path)
@@ -167,6 +166,17 @@ module HPNET
         end
       end
       @approve_validation_tokens
+    end
+
+    def upload_page
+      return unless self.logged_in?
+
+      headers = COMMON_HEADERS.merge("Cookie" => self.current_session.cookie)
+      res = HTTParty.get upload_url, headers: headers
+      return if res.body.match? EXPIRED_SESSION_REGEX
+
+      html_doc = Nokogiri.HTML5(res.body)
+      yield html_doc if block_given?
     end
 
     def approve_page
