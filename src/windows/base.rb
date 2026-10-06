@@ -2,6 +2,9 @@ module HPNET
   module Windows
     class Base
       include Glimmer::LibUI::CustomWindow
+
+      attr_reader :engine
+
       def initialize(engine: nil, parent: nil)
         super(parent, nil, nil, nil)
         unless engine.is_a?(HPNET::Engine) and engine&.client&.logged_in?

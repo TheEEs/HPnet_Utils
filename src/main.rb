@@ -16,9 +16,7 @@ Engine.launch do |authenticated|
     exit 1
   end
   main_window = HPNET::Windows::Main.new(engine: Engine) do |w|
-    w.instance_eval do
-      @window.title = "Tiện ích HPNET - #{engine.client.display_name}"
-    end
+    w.title = "Tiện ích HPNET - #{Engine.client.display_name}"
   end
   main_window.show
 end
