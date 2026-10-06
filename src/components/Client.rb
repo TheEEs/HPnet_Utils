@@ -119,11 +119,10 @@ module HPNET
       res = JSON.parse(res.body)
       res["Records"].flatten
     end
-    
+
     def approve_document(document_id: nil, lanhdao_id: nil)
       return unless self.logged_in? and document_id and lanhdao_id
 
-      binding.pry
       @vanthu_id ||= begin
         self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
       end
