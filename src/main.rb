@@ -12,7 +12,7 @@ Engine = HPNET::Engine.new
 
 Engine.launch do |authenticated|
   unless authenticated
-    STDERR.puts "Chưa thực hiện đăng nhập, điền thông tin đăng nhập vào file .env ở gốc thư mục"
+    STDERR.puts "Chưa đăng nhập. Hãy đảm bảo bạn đã điền đúng và đủ thông tin đăng nhập vào file .env ở thư mục gốc của ứng dụng"
     exit 1
   end
   main_window = HPNET::Windows::Main.new(engine: Engine) do |w|
