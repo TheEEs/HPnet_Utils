@@ -6,7 +6,7 @@ module HPNET
       class UnauthorizedException < Exception
       end
 
-      class ClericalAssistantNotFound < Exception 
+      class ClericalAssistantNotFound < Exception
       end
 
       LOGIN_SUCCESS_REGEX = /ASPXAUTH|ASPXFORMSAUTH/
@@ -29,19 +29,16 @@ module HPNET
       ROOT_URL = "https://qlvb.hpnet.vn"
 
       COMMON_HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0',
+        'Content-Type' => 'application/x-www-form-urlencoded',
         # charset=UTF-8
-        'Origin': 'https://qlvb.hpnet.vn',
-        'Referer': 'https://qlvb.hpnet.vn/style/qlvb2013/Login.aspx?ReturnURL=https://qlvb.hpnet.vn/default.aspx'
+        'Origin' => 'https://qlvb.hpnet.vn',
+        'Referer' => 'https://qlvb.hpnet.vn/style/qlvb2013/Login.aspx?ReturnURL=https://qlvb.hpnet.vn/default.aspx',
       }
 
       LOGIN_BODY = {
         '__EVENTTARGET' => '',
         '__EVENTARGUMENT' => '',
-        '__VIEWSTATE' => 'OzB0Tiqetl10GgwLFoAU8Lziur1tnI5gqVDCoVDAHdUt5Ayp23byZEPAXVXfIpor6DZGQSVKaWy3VwiSO7tmi4ngMhaG7u64sGuHleqVcnVwh2qeqygOcoBtd38A6ks38C5/Y+Pe/vWoa0bI9B9+zOSwpiy92l5KQkLsrVKzVkd9Mou2TQ7kUnXwuDXjbJFG8qjUeRlRYUwUj9NuzbCj6FZoHLCUD2MEJD4bHkbqMd9BD61po3mCCdIkvBgj3n7pbGYUpRpqBEYP6qEeyQ5mXgNmdG0=',
-        '__VIEWSTATEGENERATOR' => '9EC021CD',
-        '__EVENTVALIDATION' => 'Ot1MAI5VgTW/YpxgZFXFS8y1ZTT4vEYTVCCdOWUWq9A1GQ5XBjbeBOWDXgtsRqpogDMolx8sk2Ynwg/kLo75+B7wdeidbx4bzzFU+C8xbsKAf8K0SGCnOkpP+2NaBvfrYhcLqzKy7dgDSwduFjoZbd+IyKM5+pTiGgPIETFeFfe27P4UaaOB5M0XGd197oJEJHYFsA==',
         'Login1$Login' => 'Đăng nhập'
       }
 

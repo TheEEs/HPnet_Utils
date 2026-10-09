@@ -10,7 +10,8 @@ module HPNET
 
     def login(username: '', password: '')
       body = LOGIN_BODY.merge('Login1$UserName' => username,
-                              'Login1$Password' => password)
+                              'Login1$Password' => password,
+                              **login_validation_tokens)
       res = HTTParty.post(login_url, headers: COMMON_HEADERS, body:, follow_redirects: true)
       if res.success? and res.request.options[:headers]["Cookie"]&.match? LOGIN_SUCCESS_REGEX
         html_doc = Nokogiri.HTML5(res.body)
@@ -127,7 +128,7 @@ module HPNET
         self.workers.find { |w| w.name.match?(VANTHU_REGEX) }&.id
       end
 
-      unless @vanthu_id 
+      unless @vanthu_id
         raise ClericalAssistantNotFound.new
       end
 
@@ -148,6 +149,16 @@ module HPNET
     end
 
     private
+
+    def login_validation_tokens
+      login_page do |html_doc|
+        break {
+          "__VIEWSTATE" => html_doc.css("input#__VIEWSTATE")&.attr('value')&.value,
+          "__VIEWSTATEGENERATOR" => html_doc.css('input#__VIEWSTATEGENERATOR')&.attr('value')&.value,
+          "__EVENTVALIDATION" => html_doc.css('input#__EVENTVALIDATION')&.attr('value')&.value
+        }
+      end
+    end
 
     def upload_validation_tokens(force_update: false)
       if force_update or !@upload_validation_tokens
@@ -173,6 +184,16 @@ module HPNET
         end
       end
       @approve_validation_tokens
+    end
+
+    def login_page
+      return if self.logged_in?
+
+      headers = COMMON_HEADERS
+      res = HTTParty.get login_url, headers: headers
+
+      html_doc = Nokogiri.HTML5(res.body)
+      yield html_doc if block_given?
     end
 
     def upload_page

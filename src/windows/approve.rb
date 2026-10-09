@@ -68,20 +68,22 @@ module HPNET
                        lanhdao_id: (leaders[self.selected_leader_index][:value] rescue nil)) do |success, processed_doc, all_docs|
           @doc_numbers = all_docs.size
           next unless success
+
           @count += 1
           Glimmer::LibUI::queue_main do
             self.percent = (@count * 100.to_f) / @doc_numbers
           end
         end
-        rescue HPNET::Client::ClericalAssistantNotFound => e
-          msg_box("Lỗi", "Không tìm thấy tài khoản văn thư.\nHãy đảm bảo rằng văn thư cơ quan có chứa cụm từ \"Văn thư\" trong tên của họ")
+      rescue HPNET::Client::ClericalAssistantNotFound => e
+        msg_box("Lỗi",
+                "Không tìm thấy tài khoản văn thư.\nHãy đảm bảo rằng văn thư cơ quan có chứa cụm từ \"Văn thư\" trong tên của họ")
       end
 
       def initialize(...)
         self.percent = 0
         super
-        self.on_closing do 
-           parent_window&.enable
+        self.on_closing do
+          parent_window&.enable
         end
       end
 
