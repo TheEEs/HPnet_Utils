@@ -18,10 +18,10 @@ class DocumentSummarizerTest < Minitest::Test
     )
   end
 
-  def test_summarize_information_success
+  def test_AI_summarize_information_success
     refute_empty file_paths
     path = file_paths.sample
-    summary = Schema.from_hash Summarizer.summarize(path).parsed
+    summary = Schema.from_hash Summarizer.ai_summarize(path).parsed
     refute_empty summary.type
     refute_empty summary.name
     refute_empty summary.title

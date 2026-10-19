@@ -20,7 +20,7 @@ module HPNET
             }
             group("Chọn lãnh đạo để chuyển tiếp:") {
               stretchy false
-              combobox {
+              @ld_combobox = combobox {
                 items <= [self, :leader_names]
                 selected <=> [self, :selected_leader_index]
               }
@@ -36,9 +36,11 @@ module HPNET
               stretchy false
               on_clicked do |b|
                 b.disable
+                @ld_combobox&.disable
                 Thread.new do
                   self.approve
                   b.enable
+                  @ld_combobox&.enable
                 end
               end
             }

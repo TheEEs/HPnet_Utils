@@ -9,7 +9,7 @@ module HPNET
         AI = 2
       end
 
-      attr_accessor :selected_dir, :how_we_should_set_title_of_document, :manual_document_title
+      attr_accessor :selected_dir, :how_we_should_set_title_of_document, :manual_document_title, :progress
 
       body {
         @window = window("Trình văn bản hàng loạt") {
@@ -30,6 +30,7 @@ module HPNET
                   text <= [self, :selected_dir, on_read: ->(value) { "Thư mục được lựa chọn: #{value}" }]
                 }
             group("Trích yếu của văn bản") {
+              stretchy false
               vertical_box {
                 radio_buttons {
                   stretchy false
@@ -39,7 +40,6 @@ module HPNET
                     "Trí tuệ nhân tạo (AI)"
                   ]
                   selected <=> [self, :how_we_should_set_title_of_document]
-                  #on_selected &self.method(:radio_button_selected_change)
                 }
                 @title_form = form {
                   stretchy false
@@ -48,12 +48,21 @@ module HPNET
                 }
               }
             }
+            group("Tiến trình thực hiện"){
+              progress_bar {
+                value <=> [self, :progress]
+              }
+            }
+            button("Trình duyệt hàng loạt"){
+              stretchy false
+            }
           }
         }
       }
 
       def initialize(...)
         self.selected_dir = ""
+        self.progress = 0
         self.how_we_should_set_title_of_document = 0
         super
         self.on_closing do

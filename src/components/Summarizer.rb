@@ -1,4 +1,5 @@
-require "ruby_llm/schema"
+# frozen_string_literal: true
+
 module HPNET
   class Summarizer
     GEMINI_API_KEY = ENV["GEMINI_API_KEY"]
@@ -31,9 +32,14 @@ module HPNET
     end
 
     class << self
-      def summarize(path)
+      def ai_summarize(path)
         RubyLLM.chat(model: "gemini-3.1-flash-lite").with_schema(SummarySchema).ask with: path
       end
+
+      def file_summarize(path)
+        File.basename(path, ".*")
+      end
+      
     end
   end
 end

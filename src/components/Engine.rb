@@ -24,5 +24,11 @@ module HPNET
         end
       end
     end
+
+
+    def upload(lanhdao_id: nil)
+      Sync do 
+      end  
+    end
   end
 end
