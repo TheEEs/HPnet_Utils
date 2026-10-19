@@ -6,6 +6,21 @@ module HPNET
     class Main < Base
       include Glimmer::LibUI::CustomWindow
 
+      before_body {
+         menu("Menu"){
+            menu_item("Cấu hình") {
+              on_clicked do 
+              end
+            }
+            menu_item("Thoát") {
+              on_clicked do
+                self.destroy
+                ::LibUI.quit
+              end
+            }
+          }
+      }
+
       body {
         window() {
           margined true
