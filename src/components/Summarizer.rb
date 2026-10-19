@@ -39,7 +39,6 @@ module HPNET
       def file_summarize(path)
         File.basename(path, ".*")
       end
-      
     end
   end
 end

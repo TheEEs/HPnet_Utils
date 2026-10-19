@@ -25,10 +25,12 @@ module HPNET
       end
     end
 
-
-    def upload(lanhdao_id: nil)
-      Sync do 
-      end  
+    def upload(upload_dir, lanhdao_id: nil)
+      Sync do
+        # semaphore = Async::Semaphore.new(20)
+        sleep 3
+        yield if block_given?
+      end
     end
   end
 end
