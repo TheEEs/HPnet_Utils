@@ -87,14 +87,13 @@ module HPNET
       end
 
       def upload(...)
-        #self.disable
+        # self.disable
         @controls&.each(&:disable)
-        Thread.new do 
-          engine.upload(selected_dir, lanhdao_id: nil) do 
-            @controls&.each(&:enable)
-          end
+        Thread.new do
+          engine.upload(selected_dir, lanhdao_id: nil)
+          @controls&.each(&:enable)
         end
-        #self.enable
+        # self.enable
       end
 
       private

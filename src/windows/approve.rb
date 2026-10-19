@@ -14,13 +14,13 @@ module HPNET
           vertical_box {
             group("Lọc văn bản trong tên có chứa:") {
               stretchy false
-              entry {
+              @controls << entry {
                 text <=> [self, :filter_text]
               }
             }
             group("Chọn lãnh đạo để chuyển tiếp:") {
               stretchy false
-              @ld_combobox = combobox {
+              @controls << combobox {
                 items <= [self, :leader_names]
                 selected <=> [self, :selected_leader_index]
               }
@@ -32,17 +32,9 @@ module HPNET
             label("Tiến trình thực hiện:") {
               stretchy false
             }
-            button("Chuyển duyệt") {
+            @controls << button("Chuyển duyệt") {
               stretchy false
-              on_clicked do |b|
-                b.disable
-                @ld_combobox&.disable
-                Thread.new do
-                  self.approve
-                  b.enable
-                  @ld_combobox&.enable
-                end
-              end
+              on_clicked &self.method(:approve)
             }
             grid {
               label {
@@ -66,15 +58,19 @@ module HPNET
 
       def approve(...)
         @count = 0
-        engine.approve(filter: self.filter_text,
-                       lanhdao_id: (leaders[self.selected_leader_index][:value] rescue nil)) do |success, processed_doc, all_docs|
-          @doc_numbers = all_docs.size
-          next unless success
+        @controls.each(&:disable)
+        Thread.new do
+          engine.approve(filter: self.filter_text,
+                         lanhdao_id: (leaders[self.selected_leader_index][:value] rescue nil)) do |success, processed_doc, all_docs|
+            @doc_numbers = all_docs.size
+            next unless success
 
-          @count += 1
-          Glimmer::LibUI::queue_main do
-            self.percent = (@count * 100.to_f) / @doc_numbers
+            @count += 1
+            Glimmer::LibUI::queue_main do
+              self.percent = (@count * 100.to_f) / @doc_numbers
+            end
           end
+          @controls.each(&:enable)
         end
       rescue HPNET::Client::ClericalAssistantNotFound => e
         msg_box("Lỗi",
@@ -82,6 +78,7 @@ module HPNET
       end
 
       def initialize(...)
+        @controls = []
         self.percent = 0
         super
         self.on_closing do
