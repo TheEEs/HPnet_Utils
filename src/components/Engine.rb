@@ -1,8 +1,10 @@
 require_relative "./Client"
+require_relative "../components/helpers/engine_helpers"
 require "async/semaphore"
 
 module HPNET
   class Engine
+    include HPNET::Engine::Helpers
     attr_reader :client
 
     def launch
@@ -25,10 +27,11 @@ module HPNET
       end
     end
 
-    def upload(upload_dir, lanhdao_id: nil)
+    def upload(upload_dir, lanhdao_id: nil, how_we_should_set_title_of_document: nil)
+      upload_dir = upload_dir&.force_encoding("utf-8")
+      
+      return unless Dir.exist?(upload_dir) and lanhdao_id and how_we_should_set_title_of_document
       Sync do
-        # semaphore = Async::Semaphore.new(20)
-        sleep 3
         yield if block_given?
       end
     end

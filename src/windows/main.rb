@@ -5,7 +5,6 @@ module HPNET
   module Windows
     class Main < Base
       include Glimmer::LibUI::CustomWindow
-      
       body {
         window() {
           margined true

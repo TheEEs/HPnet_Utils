@@ -2,14 +2,13 @@ module HPNET
   module Windows
     class Upload < Base
       include Glimmer::LibUI::CustomWindow
+      include HPNET::Engine::Helpers
 
-      class HowWeShouldSetTitleOfDocument
-        Manual = 0
-        FromFilePath = 1
-        AI = 2
-      end
+      PATH_REGEX = /^(?:[a-zA-Z]:)?(?:\\|\/)?(?:[^\\\/:*?"<>|\r\n]+(?:\\|\/))*[^\\\/:*?"<>|\r\n]*$/
+      
 
-      attr_accessor :selected_dir, :how_we_should_set_title_of_document, :manual_document_title, :progress
+      attr_accessor :selected_dir, :how_we_should_set_title_of_document,
+                    :manual_document_title, :progress, :selected_leader_index
 
       body {
         @window = window("Trình văn bản hàng loạt") {
@@ -18,16 +17,16 @@ module HPNET
           vertical_box {
             group("Chọn thư mục chứa các tệp cần upload") {
               stretchy false
-              horizontal_box {
+              vertical_box {
                 @controls << button("Chọn thư mục") {
                   stretchy false
                   on_clicked &self.method(:select_directory)
                 }
+                label {
+                  stretchy false
+                  text <= [self, :selected_dir, on_read: ->(value) { "Thư mục được lựa chọn: #{value}" }]
+                }
               }
-            }
-            label {
-              stretchy false
-              text <= [self, :selected_dir, on_read: ->(value) { "Thư mục được lựa chọn: #{value}" }]
             }
             group("Trích yếu của văn bản") {
               stretchy false
@@ -45,6 +44,13 @@ module HPNET
                   stretchy false
                   content(self, :how_we_should_set_title_of_document) { radio_button_selected_change }
                 }
+              }
+            }
+            group("Lãnh đạo trình") {
+              stretchy false
+              @controls << combobox {
+                items <= [self, :leader_names]
+                selected <=> [self, :selected_leader_index]
               }
             }
             group("Tiến trình thực hiện") {
@@ -89,13 +95,19 @@ module HPNET
       def upload(...)
         @controls&.each(&:disable)
         Thread.new do
-          engine.upload(selected_dir, lanhdao_id: nil)
+          engine.upload(selected_dir, lanhdao_id: (@leaders[self.selected_leader_index][:value] rescue nil),
+                        how_we_should_set_title_of_document: self.how_we_should_set_title_of_document)
           @controls&.each(&:enable)
         end
         # self.enable
       end
 
       private
+
+      def leader_names
+        @leaders ||= engine.client.leaders
+        @leaders.map { |l| l[:name] }
+      end
 
       def manual_form
         entry {
