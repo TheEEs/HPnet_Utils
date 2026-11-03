@@ -5,6 +5,7 @@ Bundler.require :default
 Dotenv.load
 include Glimmer
 
+require_relative "./components/helpers/kernel"
 require_relative "./components/Engine"
 require_relative "./windows/base"
 require_relative "./windows/main"

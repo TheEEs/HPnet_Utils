@@ -24,7 +24,7 @@ module HPNET
                 }
                 label {
                   stretchy false
-                  text <= [self, :selected_dir, on_read: ->(value) { "Thư mục được lựa chọn: #{value}" }]
+                  text <= [self, :selected_dir, on_read: ->(value) { "Thư mục được lựa chọn: #{value.ellipsis(max_length: 50)}" }]
                 }
               }
             }
