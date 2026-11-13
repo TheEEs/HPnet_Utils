@@ -1,9 +1,9 @@
-require "test_helper"
-require "minitest/autorun"
-require_relative "../src/components/Summarizer.rb"
+require 'test_helper'
+require 'minitest/autorun'
+require_relative '../src/components/Summarizer'
 
 class DocumentSummarizerTest < Minitest::Test
-  SAMPLE_FILES_DIR = "./spec/sample_files"
+  SAMPLE_FILES_DIR = './spec/sample_files'
   Summarizer = HPNET::Summarizer
   Schema = Summarizer::SummarySchema
 
@@ -13,7 +13,7 @@ class DocumentSummarizerTest < Minitest::Test
     @file_paths = Dir.glob(
       File.join(
         SAMPLE_FILES_DIR,
-        "*.pdf"
+        '*.pdf'
       )
     )
   end

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "test_helper"
-require "minitest/autorun"
-require_relative "../src/AI/agents/assignment_agent"
-require_relative "../src/components/Client"
+require 'test_helper'
+require 'minitest/autorun'
+require_relative '../src/AI/agents/assignment_agent'
+require_relative '../src/components/Client'
 
 class AssignmentAgentTest < Minitest::Test
   attr_reader :client, :username, :password
 
-  ASSIGNMENT_JSON_FILE = "./spec/sample_files/assignment_agent_tests.json"
+  ASSIGNMENT_JSON_FILE = './spec/sample_files/assignment_agent_tests.json'
 
   def setup
     @client = HPNET::Client.new
@@ -18,9 +18,9 @@ class AssignmentAgentTest < Minitest::Test
 
   def test_agent_initialization
     # should raises if client is not logged in
-    client.login(username:, password: "wrong_password")
+    client.login(username:, password: 'wrong_password')
     assert_raises(AssignmentAgent::ClientNotLoggedInException) do
-      agent = AssignmentAgent.new client:
+      AssignmentAgent.new client:
     end
   end
 
@@ -28,7 +28,7 @@ class AssignmentAgentTest < Minitest::Test
     client_login_success
     test_json = JSON.parse(File.read(ASSIGNMENT_JSON_FILE))
     refute_empty test_json
-    test_json.each_pair do |f, w|
+    test_json.each_pair do |f, _w|
       ag = AssignmentAgent.new(client:)
       result = ag.ask(with: f).content
       puts f, result

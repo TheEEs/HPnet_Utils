@@ -1,15 +1,15 @@
-require "bundler/setup"
+require 'bundler/setup'
 
 Bundler.require :default, :test
 
-require "minitest/test_task"
+require 'minitest/test_task'
 
-Dotenv.load ".env.test"
+Dotenv.load '.env.test'
 
 Minitest::TestTask.create(:test) do |t|
-  t.libs << "spec"
+  t.libs << 'spec'
   t.warning = false
-  t.test_globs = ["spec/**/*_test.rb"]
+  t.test_globs = ['spec/**/*_test.rb']
 end
 
-task :default => :test
+task default: :test

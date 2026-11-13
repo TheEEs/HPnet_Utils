@@ -1,45 +1,56 @@
-require_relative "./approve"
-require_relative "./upload"
+# frozen_string_literal: true
+
+require_relative './approve'
+require_relative './upload'
 
 module HPNET
   module Windows
     class Main < Base
       include Glimmer::LibUI::CustomWindow
-      body {
-        window() {
+
+      body do
+        window do
           margined true
           resizable false
-          vertical_box {
-            horizontal_box {
+
+          vertical_box do
+            horizontal_box do
               stretchy true
-              button("Trình văn bản hàng loạt") {
-                on_clicked &self.method(:upload)
-              }
-              button("Chuyển duyệt văn bản hàng loạt") {
-                on_clicked &self.method(:approve)
-              }
-            }
-            label("Phát triển bởi Trần Bá Đạt - 2026") {
+
+              button('Trình văn bản hàng loạt') do
+                on_clicked -> { open_upload_window }
+              end
+
+              button('Chuyển duyệt văn bản hàng loạt') do
+                on_clicked ->(_, __) { open_approve_window }
+              end
+            end
+
+            label(FOOTER_TEXT) do
               stretchy false
-            }
-          }
-        }
-      }
-      def approve(...)
-        approve_window = HPNET::Windows::Approve.new(engine:, parent: self) do |w|
+            end
+          end
+        end
+      end
+
+      def open_approve_window
+        approve_window = HPNET::Windows::Approve.new(engine: engine, parent: self) do |w|
           w.title = "Chuyển duyệt văn bản hàng loạt - #{engine.client.display_name}"
-          self.disable
+          disable
         end
         approve_window.show
       end
 
-      def upload(...)
-        upload_window = HPNET::Windows::Upload.new(engine:, parent: self) do |w|
+      def open_upload_window
+        upload_window = HPNET::Windows::Upload.new(engine: engine, parent: self) do |w|
           w.title = "Trình văn bản hàng loạt - #{engine.client.display_name}"
-          self.disable
+          disable
         end
         upload_window.show
       end
+
+      alias approve open_approve_window
+      alias upload open_upload_window
     end
   end
 end
