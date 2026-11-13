@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative './approve'
-require_relative './upload'
+require_relative "./approve"
+require_relative "./upload"
+require_relative "./login"
 
 module HPNET
   module Windows
@@ -17,12 +18,20 @@ module HPNET
             horizontal_box do
               stretchy true
 
-              button('Trình văn bản hàng loạt') do
-                on_clicked -> { open_upload_window }
+              button("Trình văn bản hàng loạt") do
+                on_clicked { open_upload_window }
               end
 
-              button('Chuyển duyệt văn bản hàng loạt') do
-                on_clicked ->(_, __) { open_approve_window }
+              button("Chuyển duyệt văn bản hàng loạt") do
+                on_clicked { open_approve_window }
+              end
+            end
+
+            horizontal_box do
+              stretchy false
+
+              button("Đăng xuất") do
+                on_clicked { logout }
               end
             end
 
@@ -47,6 +56,13 @@ module HPNET
           disable
         end
         upload_window.show
+      end
+
+      def logout
+        engine.logout(clear_saved: true)
+        destroy
+        login_window = HPNET::Windows::Login.new(engine: engine)
+        login_window.show
       end
 
       alias approve open_approve_window

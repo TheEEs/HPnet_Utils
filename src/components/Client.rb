@@ -32,6 +32,16 @@ module HPNET
       !current_session&.cookie.to_s.strip.empty?
     end
 
+    def logout
+      self.current_session = nil
+      @leaders = nil
+      @workers = nil
+      @vanthu_id = nil
+      @upload_validation_tokens = nil
+      @approve_validation_tokens = nil
+      true
+    end
+
     def display_name
       current_session&.display_name
     end

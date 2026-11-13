@@ -23,7 +23,7 @@ module HPNET
             group('Chọn lãnh đạo để chuyển tiếp:') do
               stretchy false
               @controls << combobox do
-                items
+                items 
                 [self, :leader_names]
                 selected <=> [self, :selected_leader_index]
               end
@@ -40,7 +40,7 @@ module HPNET
 
             @controls << button('Chuyển duyệt') do
               stretchy false
-              on_clicked -> { approve }
+              on_clicked { approve }
             end
 
             grid do

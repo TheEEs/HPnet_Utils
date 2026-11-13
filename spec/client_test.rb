@@ -40,6 +40,15 @@ class ClientTest < Minitest::Test
     assert_nil session
   end
 
+  def test_logout
+    session = client_login_success
+    assert client.logged_in?
+
+    client.logout
+    refute client.logged_in?
+    assert_nil client.current_session
+  end
+
   def test_get_leaders_success
     session = client_login_success
     assert_instance_of HPNET::Client::Session, session

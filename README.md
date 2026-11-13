@@ -83,7 +83,7 @@ Khởi chạy ứng dụng bằng cách chạy file entrypoint chính:
 ```bash
 ruby src/main.rb
 ```
-*Lưu ý:* Nếu bạn chưa cấu hình thông tin đăng nhập trong file `.env`, ứng dụng sẽ hiển thị thông báo lỗi trên cửa sổ dòng lệnh và thoát.
+*Lưu ý:* Nếu bạn chưa cấu hình thông tin đăng nhập trong file `.env` hoặc chưa lưu tài khoản, ứng dụng sẽ tự động hiển thị màn hình **Đăng nhập** để bạn nhập tài khoản/mật khẩu và tùy chọn ghi nhớ tài khoản cho các lần sử dụng sau. Bạn cũng có thể nhấn **Đăng xuất** bất kỳ lúc nào trên màn hình chính.
 
 ---
 

@@ -2,6 +2,7 @@
 
 require 'async/semaphore'
 require_relative './Client'
+require_relative './CredentialStore'
 require_relative './PDFConverter'
 require_relative './Summarizer'
 require_relative '../components/helpers/engine_helpers'
@@ -11,10 +12,41 @@ module HPNET
     include HPNET::Engine::Helpers
     attr_reader :client
 
-    def launch(username: ENV['USER_NAME'], password: ENV['PASSWORD'])
+    def launch(username: nil, password: nil)
       @client = HPNET::Client.new
-      client.login(username: username, password: password)
+
+      creds = CredentialStore.load
+      user = username || ENV['USER_NAME'] || creds&.[](:username)
+      pass = password || ENV['PASSWORD'] || creds&.[](:password)
+
+      if user.to_s.strip.empty? || pass.to_s.empty?
+        yield false if block_given?
+        return false
+      end
+
+      client.login(username: user, password: pass)
       yield client.logged_in? if block_given?
+      client.logged_in?
+    end
+
+    def login(username, password, remember: true)
+      @client ||= HPNET::Client.new
+      client.login(username: username, password: password)
+      if client.logged_in?
+        if remember
+          CredentialStore.save(username, password)
+        else
+          CredentialStore.clear
+        end
+        true
+      else
+        false
+      end
+    end
+
+    def logout(clear_saved: true)
+      CredentialStore.clear if clear_saved
+      client&.logout
     end
 
     def approve(filter: nil, lanhdao_id: nil)

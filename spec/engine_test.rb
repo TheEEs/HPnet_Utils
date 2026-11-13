@@ -2,6 +2,7 @@
 
 require 'test_helper'
 require 'minitest/autorun'
+require 'tempfile'
 require_relative '../src/components/Engine'
 
 class EngineTest < Minitest::Test
@@ -25,6 +26,43 @@ class EngineTest < Minitest::Test
     refute engine.client.logged_in?
     ENV['USER_NAME'] = temp_user_name
     ENV['PASSWORD'] = temp_password
+  end
+
+  def test_login_and_logout
+    temp_file = Tempfile.new('engine_creds_test')
+    temp_path = temp_file.path
+    temp_file.close
+    temp_file.unlink
+    HPNET::CredentialStore.file_path = temp_path
+
+    mock_client = Object.new
+    logged_in_state = false
+    mock_client.define_singleton_method(:login) do |username:, password:|
+      logged_in_state = (username == 'admin' && password == 'secret')
+    end
+    mock_client.define_singleton_method(:logged_in?) { logged_in_state }
+    mock_client.define_singleton_method(:logout) { logged_in_state = false; true }
+
+    engine.instance_variable_set(:@client, mock_client)
+
+    # Login failure
+    success = engine.login('admin', 'wrong')
+    refute success
+    refute HPNET::CredentialStore.saved?
+
+    # Login success with remember
+    success = engine.login('admin', 'secret', remember: true)
+    assert success
+    assert HPNET::CredentialStore.saved?
+    assert_equal 'admin', HPNET::CredentialStore.load[:username]
+
+    # Logout
+    engine.logout(clear_saved: true)
+    refute engine.client.logged_in?
+    refute HPNET::CredentialStore.saved?
+  ensure
+    File.delete(temp_path) if File.exist?(temp_path)
+    HPNET::CredentialStore.file_path = nil
   end
 
   def test_upload_returns_early_on_invalid_arguments

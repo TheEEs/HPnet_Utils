@@ -20,7 +20,7 @@ module HPNET
               vertical_box do
                 @controls << button('Chọn thư mục') do
                   stretchy false
-                  on_clicked -> { select_directory }
+                  on_clicked { select_directory }
                 end
                 label do
                   stretchy false
@@ -68,7 +68,7 @@ module HPNET
 
             @controls << button('Trình duyệt hàng loạt') do
               stretchy false
-              on_clicked -> { upload }
+              on_clicked { upload }
             end
 
             grid do

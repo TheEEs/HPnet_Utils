@@ -9,8 +9,8 @@ module HPNET
 
       attr_reader :engine, :parent_window, :controls
 
-      def initialize(engine: nil, parent: nil)
-        unless engine.is_a?(HPNET::Engine) && engine&.client&.logged_in?
+      def initialize(engine: nil, parent: nil, require_login: true)
+        if require_login && !(engine.is_a?(HPNET::Engine) && engine&.client&.logged_in?)
           destroy
           ::LibUI.quit
         end
